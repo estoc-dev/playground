@@ -1,0 +1,502 @@
+main {
+  width: min(100% - 32px, 66rem);
+}
+
+main > :not(.lab) {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+main > ul,
+main > ol {
+  padding-left: 1.4rem;
+}
+
+.lab {
+  margin: 1.6rem 0 2.4rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font: 15px/1.5 var(--sans);
+  overflow: hidden;
+}
+
+.lab .graph {
+  overflow-x: auto;
+  padding: 12px 8px 4px;
+  background: var(--ground);
+  border-bottom: 1px solid var(--line);
+}
+
+.lattice {
+  display: block;
+  margin-inline: auto;
+  width: var(--natural-width);
+  max-width: none;
+  height: auto;
+  font-family: var(--mono);
+}
+
+.lattice .axis {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lattice .axis.local,
+.lattice .axis-title.local {
+  fill: var(--copper);
+}
+
+.lattice .axis.peer,
+.lattice .axis-title.peer {
+  fill: var(--accent);
+}
+
+.lattice .axis-title {
+  font: 11px var(--sans);
+}
+
+.lattice .node {
+  cursor: pointer;
+}
+
+.lattice .node rect {
+  fill: var(--raised);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.lattice .node .pair {
+  fill: var(--ink);
+  font-size: 12.5px;
+}
+
+.lattice .node .notes {
+  fill: var(--ink-soft);
+  font-size: 11px;
+}
+
+.lattice .node .tag {
+  fill: var(--accent);
+  font: 600 11px var(--sans);
+}
+
+.lattice .node.ghost rect {
+  fill: transparent;
+  stroke-dasharray: 4 3;
+}
+
+.lattice .node.on-path rect {
+  stroke: var(--accent);
+}
+
+.lattice .node.head rect {
+  fill: var(--verdigris-wash);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.lattice .node.conflict rect {
+  fill: var(--alarm-wash);
+  stroke: var(--alarm);
+}
+
+.lattice .node.highlight rect,
+.lattice .node.hover rect {
+  fill: var(--attention-wash);
+  stroke: var(--attention);
+}
+
+.lattice .node.selected rect {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.lattice .node:focus-visible {
+  outline: none;
+}
+
+.lattice .node:focus-visible rect {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.lattice .edge {
+  fill: none;
+  stroke-width: 2;
+}
+
+.lattice .edge.local {
+  stroke: var(--copper);
+}
+
+.lattice .edge.peer {
+  stroke: var(--accent);
+}
+
+.lattice .edge.derived {
+  stroke-dasharray: 2 4;
+  stroke-linecap: round;
+}
+
+.lattice .edge.diagnostic {
+  stroke: var(--ink-soft);
+  stroke-dasharray: 7 5;
+  stroke-width: 1.5;
+}
+
+.lattice .edge.claim.waiting {
+  stroke: var(--attention);
+  stroke-dasharray: 7 5;
+}
+
+.lattice .edge.claim.conflict {
+  stroke: var(--alarm);
+  stroke-dasharray: 7 5;
+}
+
+.lattice .edge.on-path {
+  stroke-width: 3.5;
+}
+
+.lattice .arrow-local path {
+  fill: var(--copper);
+}
+
+.lattice .arrow-peer path {
+  fill: var(--accent);
+}
+
+.lattice .arrow-diagnostic path {
+  fill: var(--ink-soft);
+}
+
+.lattice .arrow-waiting path {
+  fill: var(--attention);
+}
+
+.lattice .arrow-conflict path {
+  fill: var(--alarm);
+}
+
+.lattice .edge-label {
+  font-size: 11px;
+  fill: var(--ink-soft);
+  paint-order: stroke;
+  stroke: var(--ground);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.lattice .edge-label.local.usable {
+  fill: var(--copper);
+}
+
+.lattice .edge-label.peer.usable {
+  fill: var(--accent);
+}
+
+.lattice .edge-label.waiting {
+  fill: var(--attention);
+}
+
+.lattice .edge-label.conflict {
+  fill: var(--alarm);
+}
+
+.lab-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.lab-panels .panel {
+  padding: 14px 16px 16px;
+  min-width: 0;
+}
+
+.lab-panels .panel + .panel {
+  border-left: 1px solid var(--line);
+}
+
+@media (max-width: 760px) {
+  .lab-panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lab-panels .panel + .panel {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+.panel h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 0;
+  border-top: 1px solid var(--line);
+}
+
+.fact:first-child {
+  border-top: 0;
+}
+
+.fact label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.fact input {
+  margin: 3px 0 0;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.fact.off .desc,
+.fact.off .chip {
+  opacity: 0.55;
+}
+
+.chip {
+  display: inline-block;
+  min-width: 2.2em;
+  padding: 0 6px;
+  border-radius: 10px;
+  font: 600 12px/20px var(--mono);
+  text-align: center;
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  flex: none;
+}
+
+.chip.tone-peer,
+.chip.tone-observation {
+  background: var(--verdigris-wash);
+  border-color: transparent;
+}
+
+.chip.tone-local {
+  background: var(--copper-wash);
+  border-color: transparent;
+}
+
+.chip.tone-ending {
+  background: var(--raised);
+}
+
+.chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.none {
+  color: var(--ink-soft);
+}
+
+.badge {
+  flex: none;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0 8px;
+  border-radius: 10px;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+}
+
+.badge.usable {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.badge.waiting {
+  color: var(--attention);
+  border-color: var(--attention);
+  cursor: help;
+}
+
+.badge.conflict {
+  color: var(--alarm);
+  border-color: var(--alarm);
+  cursor: help;
+}
+
+.remove {
+  flex: none;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 20px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.answer dl {
+  margin: 0;
+}
+
+.answer dt {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.answer dt:first-child {
+  margin-top: 0;
+}
+
+.answer dd {
+  margin: 2px 0 0;
+}
+
+.answer .question {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.answer .witnesses {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alarm {
+  color: var(--alarm);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.lab button,
+.lab select {
+  font: 14px var(--sans);
+  color: var(--ink);
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 5px 10px;
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.lab .remove {
+  min-height: 0;
+  border: 0;
+  background: none;
+  padding: 0 4px;
+}
+
+.lab button.context[aria-pressed="true"] {
+  background: var(--attention-wash);
+  border-color: var(--attention);
+}
+
+@media (pointer: coarse) {
+  .lab button,
+  .lab select {
+    min-height: 44px;
+  }
+}
+
+.actions {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.actions .hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.json {
+  margin-top: 10px;
+}
+
+.json summary {
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.json textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font: 12px/1.4 var(--mono);
+  color: var(--ink);
+  background: var(--ground);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.json .error {
+  margin: 6px 0 0;
+  color: var(--alarm);
+  font-size: 13px;
+}
+
+.json .error:empty {
+  display: none;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 0;
+  list-style: none;
+  font: 14px var(--sans);
+  color: var(--ink-soft);
+}
+
+.legend svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.try {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  color: var(--ink-soft);
+  font-size: 0.95em;
+}
+
+.precedence {
+  font-family: var(--sans);
+  font-size: 15px;
+}
+
+.precedence li {
+  margin-bottom: 0.4rem;
+}

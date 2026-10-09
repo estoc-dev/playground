@@ -1,0 +1,160 @@
+/* Colours follow the Estoc design language: one cool ground, verdigris for
+   what arrives from the peer, copper for what is yours. */
+:root {
+  color-scheme: light dark;
+  --ground: light-dark(#edf2f4, #172024);
+  --surface: light-dark(#f7f9fa, #202b30);
+  --raised: light-dark(#ffffff, #263238);
+  --line: light-dark(#d3dfe3, #36464d);
+  --line-strong: light-dark(#b3c6cd, #4a5d65);
+  --ink: light-dark(#233238, #e9eeee);
+  --ink-soft: light-dark(#495e65, #aebcc2);
+  --accent: light-dark(#2d6a58, #9acbbb);
+  --copper: light-dark(#8a4a26, #e3ab88);
+  --verdigris-wash: light-dark(#d1e4db, #253e36);
+  --copper-wash: light-dark(#e8d9cd, #44352d);
+  --alarm: light-dark(#a54430, #f0ac95);
+  --alarm-wash: light-dark(#f6dfd8, #3f2a25);
+  --attention: light-dark(#795916, #d9b872);
+  --attention-wash: light-dark(#f2e8ce, #3a3226);
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 18px/1.6 var(--serif);
+}
+
+main,
+.site-header,
+.site-footer {
+  width: min(100% - 32px, 46rem);
+  margin-inline: auto;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-block: 20px 0;
+  font-family: var(--sans);
+  font-size: 15px;
+}
+
+.site-header a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.site-header .wordmark {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.site-footer {
+  padding-block: 48px 40px;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 2.1rem;
+  margin: 2.2rem 0 0.6rem;
+}
+
+h2 {
+  font-size: 1.45rem;
+  margin: 3.2rem 0 0.8rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin: 2rem 0 0.5rem;
+}
+
+p,
+ul,
+ol {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+}
+
+code,
+kbd {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+.lede {
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+
+.local-ink {
+  color: var(--copper);
+}
+
+.peer-ink {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.explainers {
+  list-style: none;
+  padding: 0;
+}
+
+.explainers li {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+
+.explainers a {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.explainers p {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+}

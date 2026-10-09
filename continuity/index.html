@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Continuity · Estoc playground</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%226%22 fill=%22%239acbbb%22/%3E%3C/svg%3E" />
+    <meta name="description" content="How Estoc follows a relationship across DID rotations and endings, with the real continuity model running in the page." />
+    <script type="module" src="../src/continuity/main.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="../">Estoc playground</a>
+      <a href="https://github.com/estoc-dev/estoc/tree/main/packages/continuity">@estoc/continuity</a>
+    </header>
+    <main>
+      <h1>Continuity</h1>
+      <p class="lede">
+        Two people talk over pairwise DIDs. Either of them can change address, or end, and the news arrives in messages that come late, out of
+        order, or at a different device. Continuity answers where the relationship goes next, from the facts alone, without letting arrival
+        time pick a winner.
+      </p>
+      <p>
+        Every figure on this page runs the published <code>@estoc/continuity</code> model in your browser. Each one is a set of facts you can
+        switch on and off; the answers beside it are what the model derives from exactly those facts.
+      </p>
+
+      <h2>Pairs on a lattice</h2>
+      <p>
+        From your side, a relationship is an oriented pair <code>C(local, peer)</code>: your DID first, theirs second. Swapping them asks a
+        different question. In the figures your DIDs are the <span class="local-ink">columns</span> and the peer's are the
+        <span class="peer-ink">rows</span>, so when you rotate the pair moves right, and when the peer rotates it moves down. The numbers in
+        A0, A1, B0 only tell DIDs apart; they carry no time and no order.
+      </p>
+      <p>The model reads three kinds of fact:</p>
+      <ul>
+        <li>
+          <strong>peer-observation</strong>: an authenticated message from the peer to exactly your local DID. If it carried the peer's verified
+          <code>from_prior</code> rotation, it also names the DID the peer rotated from.
+        </li>
+        <li><strong>peer-ending</strong>: the peer's verified proof that it ended.</li>
+        <li><strong>local-decision</strong>: a choice you saved, to rotate your DID or to end.</li>
+      </ul>
+      <ul class="legend" aria-label="Legend">
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--copper)" stroke-width="2" /></svg>your rotation, usable</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--accent)" stroke-width="2" /></svg>the peer's rotation, usable</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--ink-soft)" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round" /></svg>a derived join</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--ink-soft)" stroke-width="1.5" stroke-dasharray="7 5" /></svg>in history, not usable</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--attention)" stroke-width="2" stroke-dasharray="7 5" /></svg>a saved rotation, waiting</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--alarm)" stroke-width="2" stroke-dasharray="7 5" /></svg>in conflict</li>
+        <li><code>o0</code> inside a pair: a receipt there</li>
+        <li><code>end e</code>: an ending there</li>
+      </ul>
+      <p>Select any pair in a figure to query it. Hover a fact to see where it sits.</p>
+
+      <h2 id="peer-rotation">One receipt, two pairs</h2>
+      <p>
+        B1 writes to A0, carrying proof that it rotated from B0. That receipt is one fact, <code>p1</code>, and it sits at two pairs: it
+        claims the rotation at C(A0,B0), the pair the peer left, and records a receipt at C(A0,B1). The head of C(A0,B0) moves to C(A0,B1).
+        A hundred receipts carrying the same proof are still one fact.
+      </p>
+      <div class="lab" data-lab="peer"></div>
+      <p class="try">Switch on <code>x</code>: another relationship that also talks to B0. Sharing a DID connects nothing, so C(X0,B0) keeps its own head.</p>
+
+      <h2 id="local-rotation">Your rotation waits for an echo</h2>
+      <p>
+        Saving a rotation from A0 to A1 records your intent. Before the model relies on it, it asks for evidence that the pair you are leaving
+        was live: an authenticated message from the peer, or from a successor of the peer, to exactly A0. Until then the head is
+        <em>unresolved</em>. It does not fall back to the old pair either, since a forward change is known.
+      </p>
+      <div class="lab" data-lab="local"></div>
+      <p class="try">
+        Switch on <code>o0</code> and the rotation becomes usable. Try <code>o1</code> instead, a message to A1: it says nothing about A0, so
+        the head stays unresolved. Or try <code>p1</code>: B1 is a successor of B0 and wrote to A0, which confirms A0 and moves both sides at
+        once.
+      </p>
+
+      <h2 id="join">Both of you rotate</h2>
+      <p>
+        You rotated to A1 and the peer rotated to B1, each without seeing the other's move. The model joins the two: where both rotations
+        apply, it derives the pair of both successors, C(A1,B1), along the dotted join links. Every pair reaches the same head, whichever you
+        start from.
+      </p>
+      <p>
+        The join invents no receipt. Select C(A1,B1): nothing shows that B1 has written to A1, so <code>confirmation</code> answers
+        <em>not yet</em>. Switch on <code>o2</code>, a plain message from B1 to A1, and it answers yes.
+      </p>
+      <div class="lab" data-lab="join"></div>
+      <p>
+        Why does <code>p1</code>, received at A0, move C(A1,B0) too? A change of the peer applies across its <em>same-peer context</em>: the
+        pairs your own rotations connect while the peer stays B0. Your changes apply across the <em>same-local context</em>, the pairs the
+        peer's rotations connect. Select a pair and use the context buttons to see both.
+      </p>
+
+      <h2 id="fork">A fork, not a race</h2>
+      <p>
+        Two of your devices hold different facts. One has <code>o0</code>, <code>d1</code> and <code>p1</code>, and its head is C(A1,B1).
+        The other has learned <code>p2</code>: B2 wrote to A1, carrying a rotation from B0 to B2. When their facts meet, B0 has two
+        successors in one context.
+      </p>
+      <div class="lab" data-lab="fork"></div>
+      <p class="try">Switch on <code>p2</code>.</p>
+      <p>
+        The model reports <code>competing-changes</code> with the pairs it masks, and picks neither. No timestamp, arrival order or device
+        decides. Any replica holding the same facts reports the same conflict, so the conflict itself is where they converge. The head given
+        earlier is withdrawn; messages already sent stay sent, and resolving the fork is up to the people and the host.
+      </p>
+      <p>
+        Other shapes block a head too: two saved successors of your own, even before either is confirmed; a cycle back to a pair the
+        rotations left; and a join that would pair a DID with itself. All of them are scenarios in the <a href="#sandbox">sandbox</a>.
+      </p>
+
+      <h2 id="ending">Endings</h2>
+      <p>
+        An ending closes one side within a context. Here B0 ended, in a proof sent to A0. Because <code>d1</code> links C(A0,B0) to C(A1,B0)
+        while the peer stays B0, the ending applies to C(A1,B0) as well. An ending creates no empty pair, and it does not mean the contact was
+        deleted or blocked.
+      </p>
+      <div class="lab" data-lab="ending"></div>
+      <p class="try">
+        Switch on <code>p1</code>: B0 has now both rotated and ended in one context, and those compete. A rotation followed by the successor's
+        ending, B0 to B1 and then B1 ends, would be ordinary history.
+      </p>
+
+      <h2 id="precedence">How <code>head</code> answers</h2>
+      <p>For a known pair, the answer takes the first of these that holds:</p>
+      <ol class="precedence">
+        <li><strong>conflict</strong>: a conflict reaches the pair, or a claim reaches it only through history no usable link vouches for.</li>
+        <li><strong>ended</strong>: an ending of either side applies through usable links.</li>
+        <li><strong>unresolved</strong>: saved rotations still wait for an observation of their predecessor address.</li>
+        <li><strong>head</strong>: the unique pair the usable forward links lead to, with the facts that support them.</li>
+      </ol>
+      <p>A pair no fact mentions is <strong>no-evidence</strong>.</p>
+
+      <h2 id="sandbox">Sandbox</h2>
+      <p>
+        Select a pair, then add facts at it. The scenario menu holds the harder cases from the
+        <a href="https://github.com/estoc-dev/estoc/blob/main/packages/continuity/docs/guide.md">illustrated guide</a>, such as a link only the
+        positive graph has, and an onward rotation on a side branch. The facts live in the page address, so a link reproduces what you see.
+      </p>
+      <div class="lab" data-lab="sandbox"></div>
+
+      <h2 id="host">What the model leaves to the host</h2>
+      <ul>
+        <li>
+          <strong>Evidence.</strong> The model reads facts, not messages. Verifying <code>from_prior</code> proofs is
+          <a href="https://github.com/estoc-dev/estoc/tree/main/packages/from-prior"><code>@estoc/from-prior</code></a>'s; authenticating
+          envelopes and saving decisions is the host's.
+        </li>
+        <li><strong>Completeness.</strong> Every answer is relative to the facts supplied. More facts can expose a conflict and withdraw a head.</li>
+        <li><strong>Same revision.</strong> Check an operation's prerequisites and commit it against the same revision of the facts.</li>
+        <li><strong>Authority.</strong> A head is a continuity prerequisite, not permission to send.</li>
+        <li>
+          <strong>Coordination.</strong> Converging on the same facts does not coordinate anything. Two offline devices can each pick a
+          successor; the model shows the fork once their facts meet.
+        </li>
+      </ul>
+      <p>
+        The <a href="https://github.com/estoc-dev/estoc/blob/main/packages/continuity/README.md">package README</a> has the full host contract,
+        and the <a href="https://github.com/estoc-dev/estoc/blob/main/packages/continuity/docs/guide.md">illustrated guide</a> links every case
+        to its test.
+      </p>
+    </main>
+    <footer class="site-footer">
+      Running <code>@estoc/continuity</code>, profile <code data-profile></code>.
+      <a href="https://github.com/estoc-dev/playground">Source</a> · Apache-2.0
+    </footer>
+  </body>
+</html>
