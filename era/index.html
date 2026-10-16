@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recovery eras · Estoc playground</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%226%22 fill=%22%239acbbb%22/%3E%3C/svg%3E" />
+    <meta name="description" content="A proposed second level of authority for DID rotation: a recovery key in the document, and eras that tell continuity what a recovery supersedes." />
+    <script type="module" src="../src/era/main.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="../">Estoc playground</a>
+      <a href="../continuity/">Continuity</a>
+    </header>
+    <main>
+      <h1>Recovery eras</h1>
+      <p class="lede">
+        Continuity follows a relationship through the rotations a DID's own key signs. When that key leaks, or two of the peer's devices rotate
+        apart, another signature from the same key cannot settle which successor is right. This page explains a proposed second level of
+        authority, a recovery key named in the DID document, and the rule continuity would use to apply it.
+      </p>
+      <p class="status-note">
+        <strong>Research.</strong> This rule is a design under study and is not in <code>@estoc/continuity</code>. The figures run a sketch
+        written for this page. It covers the peer's side: rotations, recoveries and endings the peer signs, seen from DIDs of yours that stay
+        put. Your own rotations follow the same rules and are described in prose.
+      </p>
+      <p>
+        If pairs, heads and confirmation are new, the <a href="../continuity/">continuity page</a> introduces them. Here your DIDs are
+        <span class="local-ink">L</span> and <span class="local-ink">M</span>, and the peer's are letters from A.
+      </p>
+
+      <h2 id="authority">Two levels of authority</h2>
+      <table class="authority">
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Signed by</th>
+            <th>May</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>first-order, <code>key</code></td>
+            <td>the old DID's everyday key</td>
+            <td>change the DID, its keys and its services, but not the recovery entry</td>
+          </tr>
+          <tr>
+            <td>second-order, <code>recovery</code></td>
+            <td>the recovery key the old document names</td>
+            <td>take over, settle forks of the everyday key, and change the recovery entry</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        The level comes from the key that verified the signature, not from what the message says about itself. Each pairwise relationship is
+        recovered on its own, and the recovering side can start from any DID it held in that relationship.
+      </p>
+
+      <h2 id="document">The era in the document</h2>
+      <p>A did:peer:4 document carries the recovery key next to an era:</p>
+      <pre><code>{
+  "recovery": {
+    "publicKeyMultibase": "z6Mk…",
+    "era": "7f3a…"
+  }
+}</code></pre>
+      <ul>
+        <li>A first-order rotation binds only if the successor's document has the same recovery key and the same era as the issuer's.</li>
+        <li>A recovery binds only if the issuer's recovery key signed it and the successor's era differs from the issuer's. The recovery key itself may stay or change.</li>
+        <li>A proof that fails to bind is not a fact. The continuity model reads no documents and no era values.</li>
+      </ul>
+      <p>
+        The era is an opaque random value. A wallet creates one with the first DID of a relationship, copies it on every first-order rotation
+        and draws a new one at each recovery. It lives in the document because a did:peer:4 identifier is a hash of its document: the DID fixes
+        the era, and a different era means a different DID. It is not a counter, since the rule only asks whether two eras are equal, and a
+        number would invite ordering and last-writer-wins.
+      </p>
+
+      <h2 id="eras">Eras</h2>
+      <p>
+        Inside one relationship, the peer DIDs that first-order claims connect form an era. Here A rotated to B, and B to C, with the everyday
+        key, so A, B and C are one era. A recovery's successor starts an era of its own.
+      </p>
+      <p>
+        A recovery supersedes every first-order claim from its era and adds a <em>derived link</em> from each pair of that era to the
+        successor. Whichever pair of the old era you ask from, the head moves to the new one.
+      </p>
+      <ul class="legend" aria-label="Legend">
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--accent)" stroke-width="2" /></svg>first-order rotation</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--accent)" stroke-width="5" /><line x1="0" y1="5" x2="34" y2="5" stroke="var(--ground)" stroke-width="1.6" /></svg>recovery</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--accent)" stroke-width="1.8" stroke-dasharray="2 4" stroke-linecap="round" /></svg>derived from a recovery</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--ink-soft)" stroke-width="1.5" stroke-dasharray="7 5" /></svg>superseded, kept as history</li>
+        <li><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="var(--alarm)" stroke-width="2" stroke-dasharray="7 5" /></svg>in conflict</li>
+        <li>a box: one era, with the value its documents carry</li>
+      </ul>
+      <div class="lab" data-lab="eras"></div>
+      <p class="try">
+        Switch on <code>r</code>, a recovery A ⇒ D. <code>f1</code> and <code>f2</code> stay in history as superseded, and C(L,B) and C(L,C)
+        reach C(L,D) along derived links.
+      </p>
+
+      <h2 id="fork">Settling a fork</h2>
+      <p>
+        A's everyday key signed two successors, B and C. Two devices may have rotated apart, or someone else may hold the key. The first-order
+        rule reports competing changes and picks neither, as continuity does today.
+      </p>
+      <div class="lab" data-lab="fork"></div>
+      <p class="try">
+        Switch on <code>r</code>. Both branches start in A's era, so the recovery supersedes both, the conflict is gone and every pair leads to
+        C(L,D). Settling a fork like this is what the second level is for.
+      </p>
+
+      <h2 id="order">Recoveries in order, and in competition</h2>
+      <p>
+        D ⇒ F starts from D's era, which A ⇒ D opened, so it follows A ⇒ D instead of competing with it. The order between eras comes only from
+        recoveries. Eras form a tree, with no clock and no counter.
+      </p>
+      <div class="lab" data-lab="siblings"></div>
+      <p class="try">
+        Switch on <code>r3</code>, a second recovery from A's era, to G. Two recoveries from one era with different successors are a fork one
+        level up. The model reports it and picks neither, and the pairs downstream are blocked with it.
+      </p>
+      <p>
+        This is the limit the second level keeps. A fork of the recovery key cannot be settled from the evidence. A third level would move the
+        limit up once more; whichever level is the top, its own fork stays open.
+      </p>
+
+      <h2 id="old-keys">What an old key can still do</h2>
+      <p>
+        A recovery revokes nothing. The retired everyday key can still sign, and its letters still arrive. The rule decides what they are worth.
+      </p>
+      <div class="lab" data-lab="oldKeys"></div>
+      <ul>
+        <li>
+          Switch on <code>o1</code>, a plain letter from B. It sits in history and confirms nothing: every head stays the same, and the
+          confirmation for C(L,B) counts <code>r</code>, sent from D, but not <code>o1</code>.
+        </li>
+        <li>
+          Switch on <code>t</code>: someone with B's key rotates B to T and copies the old era into T's document. It binds, since the eras
+          match, and lands in the old era. With <code>r</code> on it is superseded at once and C(L,T) leads to C(L,D). With <code>r</code> off
+          T simply takes over, which is the case recovery exists for.
+        </li>
+        <li>
+          To reach the new era, T's document would have to carry D's era, and then B → T fails to bind because B carries the old one. Only D's
+          own key can extend D's era.
+        </li>
+        <li>
+          Switch on <code>o2</code>: B writes to M, a DID of yours in another relationship. No claim relates C(M,B) to C(L,B), so the letter
+          confirms there as usual. A recovery supersedes pairs, not DIDs.
+        </li>
+      </ul>
+
+      <h2 id="binding">Why binding compares the era</h2>
+      <p>
+        After A ⇒ D, a first-order D → E and a recovery E ⇒ F, a first-order A → E arrives late, signed with A's retired key and sent from E.
+        Your peer's other device might have sent it, or someone holding both retired keys. A and E carry different eras, so binding rejects it.
+      </p>
+      <div class="lab" data-lab="binding"></div>
+      <p class="try">
+        Untick <em>Binding compares era</em>. <code>x</code> becomes a fact and joins A, D and E into one era. A ⇒ D now lands inside its own
+        predecessor's era, and E ⇒ F competes with it. The model does not throw. It reports a conflict, so every replica stops at the same
+        answer instead of failing on the same fact.
+      </p>
+
+      <h2 id="component">A relationship is a component</h2>
+      <p>
+        The figures group pairs by relationship, and the rule derives that grouping from the claims too. Each claim covers a rectangle of
+        pairs, its local DIDs by its peer DIDs, and rectangles that share a local DID and a peer DID merge. The result is what one relationship
+        means for recovery.
+      </p>
+      <ul>
+        <li>A plain letter covers no rectangle, so writing a letter with an old key cannot widen what a recovery reaches.</li>
+        <li>
+          If your entry DID opens private branches toward two peers, no claim relates the branches. They are two components, and a recovery in
+          one leaves the other alone.
+        </li>
+        <li>
+          Your own rotations widen the rectangle across your DIDs. Each of them waits for the peer to write to the address you left, and a
+          letter on a superseded pair does not count: the recovered successor did not inherit what the old DID knew about your addresses.
+        </li>
+        <li>
+          Components, eras, supersession and the conflicts between recoveries are computed from the facts before any link is confirmed, so
+          recovery and confirmation do not wait on each other.
+        </li>
+      </ul>
+
+      <h2 id="promises">What the rule promises</h2>
+      <ul>
+        <li><strong>Old letters do nothing.</strong> A plain letter from an old era is not a claim, adds no link, and confirms nothing on a superseded pair.</li>
+        <li>
+          <strong>Old keys add no recovery.</strong> A first-order claim signed with an old era's key brings no new second-order authority. Every
+          supersession and derived link it causes belongs to a recovery that was already there; at most it widens that recovery's reach, and
+          only where the eras on both ends match.
+        </li>
+        <li>
+          <strong>Conflicts follow the facts.</strong> Replicas holding the same facts report the same conflicts, whatever order the facts
+          arrived in.
+        </li>
+      </ul>
+      <p>
+        What it leaves as it was: there is no revocation, so a retired key can still sign; a fork of the recovery key stays unsettled; and once
+        the current recovery key leaks, no signature tells its owner from a thief.
+      </p>
+
+      <h2 id="sandbox">Sandbox</h2>
+      <p>
+        Select a pair, then add facts at it. A rotation with the everyday key copies the era into the successor's document, and a recovery
+        draws a new one. The scenario menu holds the cases above and a few more, such as a later first-order claim that reveals two recoveries
+        from one era. The facts live in the page address, so a link reproduces what you see.
+      </p>
+      <div class="lab" data-lab="sandbox"></div>
+    </main>
+    <footer class="site-footer">
+      Runs a sketch of a proposed rule, not a published package.
+      <a href="https://github.com/estoc-dev/playground">Source</a> · Apache-2.0
+    </footer>
+  </body>
+</html>

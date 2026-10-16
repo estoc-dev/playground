@@ -1,0 +1,278 @@
+.eras {
+  display: block;
+  margin-inline: auto;
+  width: var(--natural-width);
+  max-width: none;
+  height: auto;
+  font-family: var(--mono);
+}
+
+.eras .heading {
+  font: 600 12px var(--sans);
+  fill: var(--copper);
+  letter-spacing: 0.02em;
+}
+
+.eras .era-box {
+  fill: var(--surface);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.eras .era-box.recovered {
+  fill: transparent;
+  stroke-dasharray: 5 4;
+}
+
+.eras .era-box.mixed {
+  stroke: var(--alarm);
+}
+
+.eras .era-label {
+  font-size: 11px;
+  fill: var(--accent);
+}
+
+.eras .era-label.mixed {
+  fill: var(--alarm);
+}
+
+.eras .era-note {
+  font: 11px var(--sans);
+  fill: var(--ink-soft);
+}
+
+.eras .node {
+  cursor: pointer;
+}
+
+.eras .node rect {
+  fill: var(--raised);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.eras .node .pair {
+  fill: var(--ink);
+  font-size: 12.5px;
+}
+
+.eras .node .notes {
+  fill: var(--ink-soft);
+  font-size: 11px;
+}
+
+.eras .node .tag {
+  fill: var(--accent);
+  font: 600 11px var(--sans);
+}
+
+.eras .node.superseded rect {
+  fill: transparent;
+  stroke-dasharray: 4 3;
+}
+
+.eras .node.superseded .pair {
+  fill: var(--ink-soft);
+}
+
+.eras .node.on-path rect {
+  stroke: var(--accent);
+}
+
+.eras .node.head rect {
+  fill: var(--verdigris-wash);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.eras .node.conflict rect {
+  fill: var(--alarm-wash);
+  stroke: var(--alarm);
+}
+
+.eras .node.hover rect {
+  fill: var(--attention-wash);
+  stroke: var(--attention);
+}
+
+.eras .node.selected rect {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.eras .node:focus-visible {
+  outline: none;
+}
+
+.eras .node:focus-visible rect {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.eras .edge {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.eras .edge.recovery {
+  stroke-width: 5;
+}
+
+.eras .edge.gap {
+  stroke: var(--ground);
+  stroke-width: 1.6;
+}
+
+.eras .edge.superseded {
+  stroke: var(--ink-soft);
+  stroke-dasharray: 7 5;
+  stroke-width: 1.5;
+}
+
+.eras .edge.conflict {
+  stroke: var(--alarm);
+}
+
+.eras .edge.key.conflict {
+  stroke-dasharray: 7 5;
+}
+
+.eras .edge.derived {
+  stroke-width: 1.8;
+  stroke-dasharray: 2 4;
+  stroke-linecap: round;
+}
+
+.eras .edge.derived.blocked {
+  stroke: var(--ink-soft);
+}
+
+.eras .edge.on-path:not(.gap) {
+  stroke-width: 3.5;
+}
+
+.eras .edge.recovery.on-path {
+  stroke-width: 6;
+}
+
+.eras .arrow-key path,
+.eras .arrow-recovery path,
+.eras .arrow-derived path {
+  fill: var(--accent);
+}
+
+.eras .arrow-superseded path {
+  fill: var(--ink-soft);
+}
+
+.eras .arrow-conflict path {
+  fill: var(--alarm);
+}
+
+.eras .edge-label {
+  font-size: 11px;
+  fill: var(--accent);
+  paint-order: stroke;
+  stroke: var(--ground);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.eras .edge-label.superseded {
+  fill: var(--ink-soft);
+}
+
+.eras .edge-label.conflict {
+  fill: var(--alarm);
+}
+
+.chip.tone-key {
+  background: var(--verdigris-wash);
+  border-color: transparent;
+}
+
+.chip.tone-recovery {
+  background: var(--verdigris-wash);
+  border: 1.5px solid var(--accent);
+}
+
+.badge.superseded {
+  color: var(--ink-soft);
+  border-style: dashed;
+  cursor: help;
+}
+
+.badge.rejected {
+  color: var(--attention);
+  border-color: var(--attention);
+  cursor: help;
+}
+
+.badge.receipt {
+  color: var(--accent);
+  border-color: var(--line-strong);
+}
+
+.era-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.era-check input {
+  margin: 0;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+.status-note {
+  border: 1px solid var(--attention);
+  background: var(--attention-wash);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: 15px/1.5 var(--sans);
+}
+
+.status-note strong {
+  color: var(--attention);
+}
+
+.authority {
+  width: 100%;
+  border-collapse: collapse;
+  font: 15px/1.45 var(--sans);
+  margin: 0 0 1.2rem;
+}
+
+.authority th,
+.authority td {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 10px;
+  border-top: 1px solid var(--line);
+}
+
+.authority th {
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+pre {
+  margin: 0 0 1rem;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow-x: auto;
+  font: 14px/1.5 var(--mono);
+}

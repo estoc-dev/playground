@@ -1,4 +1,5 @@
 import "../shared/style.css";
+import "../shared/lab.css";
 import "./continuity.css";
 import { PROFILE_VERSION } from "@estoc/continuity";
 import { mountLab } from "./lab.ts";

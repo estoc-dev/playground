@@ -10,6 +10,7 @@ export default defineConfig({
       input: {
         index: page("index.html"),
         continuity: page("continuity/index.html"),
+        era: page("era/index.html"),
       },
     },
   },
